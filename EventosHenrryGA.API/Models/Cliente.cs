@@ -13,5 +13,7 @@ public partial class Cliente
 
     public string? ApellidoMaterno { get; set; }
 
+    public bool Habilitado { get; set; }
+
     public virtual ICollection<Evento> Eventos { get; set; } = new List<Evento>();
 }

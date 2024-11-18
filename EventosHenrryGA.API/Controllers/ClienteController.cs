@@ -21,13 +21,16 @@ namespace EventosHenrryGA.API.Controllers
         {
             try
             {
-                var clientes = bd.Clientes.Select(c => new ClienteCLS
-                {
-                    Id = c.Id,
-                    Nombre = c.Nombre,
-                    ApellidoPaterno = c.ApellidoPaterno,
-                    ApellidoMaterno = c.ApellidoMaterno
-                }).ToList();
+                var clientes = bd.Clientes
+                    .Where(c => c.Habilitado) // Filtra solo los clientes habilitados
+                    .Select(c => new ClienteCLS
+                    {
+                        Id = c.Id,
+                        Nombre = c.Nombre,
+                        ApellidoPaterno = c.ApellidoPaterno,
+                        ApellidoMaterno = c.ApellidoMaterno,
+                    })
+                    .ToList();
 
                 return Ok(clientes);
             }
@@ -36,5 +39,58 @@ namespace EventosHenrryGA.API.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpGet("{id}")]
+        public IActionResult GetCliente(int id)
+        {
+            try
+            {
+                var cliente = bd.Clientes
+                    .Where(c => c.Id == id)
+                    .Select(c => new ClienteCLS
+                    {
+                        Id = c.Id,
+                        Nombre = c.Nombre,
+                        ApellidoPaterno = c.ApellidoPaterno,
+                        ApellidoMaterno = c.ApellidoMaterno,
+                    })
+                    .FirstOrDefault();
+
+                if (cliente == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(cliente);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCliente(int id)
+        {
+            try
+            {
+                var cliente = bd.Clientes.Find(id);
+
+                if (cliente == null)
+                {
+                    return NotFound();
+                }
+
+
+                cliente.Habilitado = false;
+                bd.SaveChanges();
+                return Ok( $"{cliente.Nombre} Eliminado lógicamente");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
     }
 }
