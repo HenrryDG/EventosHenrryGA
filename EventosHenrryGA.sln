@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventosHenrryGA.Client", "EventosHenrryGA.Client\EventosHenrryGA.Client.csproj", "{67245B0A-00DB-4318-BF12-E0BAF052A840}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventosHenrryGA.Client", "EventosHenrryGA.Client\EventosHenrryGA.Client.csproj", "{67245B0A-00DB-4318-BF12-E0BAF052A840}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventosHenrryGA.Entities", "EventosHenrryGA.Entities\EventosHenrryGA.Entities.csproj", "{571BCA38-2D36-46C5-94AE-E3433FA37261}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventosHenrryGA.Entities", "EventosHenrryGA.Entities\EventosHenrryGA.Entities.csproj", "{571BCA38-2D36-46C5-94AE-E3433FA37261}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventosHenrryGA.API", "EventosHenrryGA.API\EventosHenrryGA.API.csproj", "{8FFDDFD8-8636-4353-BBC0-8094CE247915}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventosHenrryGA.API", "EventosHenrryGA.API\EventosHenrryGA.API.csproj", "{8FFDDFD8-8636-4353-BBC0-8094CE247915}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
