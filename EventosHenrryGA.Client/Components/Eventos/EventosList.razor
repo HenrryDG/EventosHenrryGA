@@ -1,0 +1,108 @@
+﻿@inject EventoService eventoService
+@if (eventos == null)
+{
+    <div class="flex items-center justify-center">
+        <p class="text-lg text-gray-600">Cargando...</p>
+    </div>
+}
+else if (eventos.Count == 0)
+{
+    <div class="flex items-center justify-center">
+        <p class="text-lg text-gray-600">No hay eventos disponibles.</p>
+    </div>
+}
+else
+{
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-center text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+            <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3">ID</th>
+                    <th scope="col" class="px-6 py-3">Imagen</th>
+                    <th scope="col" class="px-6 py-3">Evento</th>
+                    <th scope="col" class="px-6 py-3">Tipo de Evento</th>
+                    <th scope="col" class="px-6 py-3">Fecha</th>
+                    <th scope="col" class="px-6 py-3">Ubicacion</th>
+                    <th scope="col" class="px-6 py-3">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var evento in eventos)
+                {
+                    <tr class="border-b bg-white hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600">
+                        <th scope="row" class="whitespace-nowrap px-6 py-4 font-medium text-gray-900">
+                            @evento.Id
+                        </th>
+                        <td class="flex justify-center px-6 py-4">
+                            @if (!string.IsNullOrEmpty(evento.ImagenEventoBase64))
+                            {
+                                <img src="data:image/jpeg;base64,@evento.ImagenEventoBase64" alt="Imagen" class="h-20 w-20 rounded-full object-cover">
+                            }
+                            else
+                            {
+                                <p>No hay imagen disponible</p>
+                            }
+                        </td>
+                        <td class="px-6 py-4">
+                            @evento.Nombre
+                        </td>
+                        <td class="px-6 py-4">
+                            @evento.NombreTipoEvento
+                        </td>
+                        <td class="px-6 py-4">
+                            @evento.Fecha
+                        </td>
+                        <td class="px-6 py-4">
+                            @evento.Ubicacion
+                        </td>
+                        <td class="px-6 py-4">
+                            <button @onclick="() => DescargarArchivo(evento.Id, evento.Nombre)"
+                                    class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded shadow-md transition-all duration-300 ease-in-out">
+                                Descargar
+                            </button>
+
+                            <button class="rounded bg-blue-600 px-4 py-2 font-bold text-white shadow-md transition-all duration-300 ease-in-out hover:bg-blue-500">
+                                Editar
+                            </button>
+
+                            <button class="rounded bg-red-600 px-4 py-2 font-bold text-white shadow-md transition-all duration-300 ease-in-out hover:bg-red-500">
+                                Eliminar
+                            </button>
+
+
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<script>
+    console.log("el script ha cargado")
+    window.descargarArchivo = function (base64Data, fileName) {
+        var link = document.createElement("a");
+        link.href = "data:application/pdf;base64," + base64Data;
+        link.download = fileName;
+        link.click();
+    };
+</script>
+
+
+@code {
+    private List<EventoCLS> eventos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        eventos = await eventoService.GetEventos();
+    }
+
+    private async Task DescargarArchivo(int idEvento, string nombreEvento)
+    {
+        await eventoService.Descargar(idEvento, nombreEvento);
+    }
+}
+@code {
+
+}

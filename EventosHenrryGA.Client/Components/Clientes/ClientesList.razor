@@ -1,0 +1,95 @@
+﻿@inject ClienteService clienteService
+
+<div class="flex items-center justify-between">
+    <div class="flex items-center">
+        <input type="text" class="rounded-lg border border-gray-300 p-2" placeholder="Buscar cliente..." @bind="clienteBuscado" />
+        <button class="ml-2 rounded-lg bg-gray-700 px-4 py-2 text-white transition-all duration-200 hover:bg-gray-800" @onclick="Buscar">Buscar</button>
+        <button class="ml-2 rounded-lg bg-gray-700 px-4 py-2 text-white transition-all duration-200 hover:bg-gray-800" @onclick="Limpiar">Limpiar</button>
+    </div>
+    <a href="/clientes/crear" class="rounded-lg bg-gray-700 px-4 py-2 text-white transition-all duration-200 hover:bg-gray-800">Nuevo Cliente</a>
+</div>
+
+@if (clientesFiltrados == null)
+{
+    <div class="flex items-center justify-center">
+        <p class="text-lg text-gray-600">Cargando...</p>
+    </div>
+}
+else if (clientesFiltrados.Count == 0)
+{
+    <div class="flex items-center justify-center">
+        <p class="text-lg text-gray-600">No hay clientes disponibles.</p>
+    </div>
+}
+else
+{
+    <div class="relative mt-11 overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-center text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+            <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3">ID</th>
+                    <th scope="col" class="px-6 py-3">Nombre</th>
+                    <th scope="col" class="px-6 py-3">Apellido Paterno</th>
+                    <th scope="col" class="px-6 py-3">Apellido Materno</th>
+                    <th scope="col" class="px-6 py-3">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cliente in clientesFiltrados)
+                {
+                    <tr class="border-b bg-white hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600">
+                        <th scope="row" class="whitespace-nowrap px-6 py-4 font-medium text-gray-900">@cliente.Id</th>
+                        <td class="px-6 py-4">@cliente.Nombre</td>
+                        <td class="px-6 py-4">@cliente.ApellidoPaterno</td>
+                        <td class="px-6 py-4">@cliente.ApellidoMaterno</td>
+                        <td class="px-6 py-4">
+                            <button href="" class="rounded bg-blue-600 px-4 py-2 font-bold text-white transition-all duration-200 hover:bg-blue-500">Editar</button>
+                            <button href="" class="rounded bg-red-600 px-4 py-2 font-bold text-white transition-all duration-200 hover:bg-red-500">Eliminar</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private List<ClienteCLS> clientes = null!; // Lista completa de clientes
+    private List<ClienteCLS> clientesFiltrados = null!; // Lista filtrada para mostrar
+    private string clienteBuscado = string.Empty; // Texto de búsqueda
+
+    protected override async Task OnInitializedAsync()
+    {
+        clientes = await clienteService.GetClientes(); // Obtén todos los clientes
+        clientesFiltrados = clientes; // Inicializa la lista filtrada con todos los clientes
+    }
+
+    private void Buscar()
+    {
+        if (string.IsNullOrEmpty(clienteBuscado))
+        {
+            clientesFiltrados = clientes; // Si no hay texto ingresado, muestra todos los clientes
+        }
+        else
+        {
+            // Divide el texto ingresado en palabras
+            var palabras = clienteBuscado.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            // Filtra los clientes verificando que todas las palabras coincidan con alguna parte del nombre o los apellidos
+            clientesFiltrados = clientes
+                .Where(c => palabras.All(palabra =>
+                    c.Nombre!.Contains(palabra, StringComparison.OrdinalIgnoreCase) ||
+                    c.ApellidoPaterno!.Contains(palabra, StringComparison.OrdinalIgnoreCase) ||
+                    c.ApellidoMaterno!.Contains(palabra, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+        }
+    }
+
+
+    private void Limpiar()
+    {
+        clientesFiltrados = clientes;
+        clienteBuscado = string.Empty;
+
+    }
+}
