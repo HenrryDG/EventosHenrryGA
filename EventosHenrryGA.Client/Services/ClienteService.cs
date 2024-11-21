@@ -5,16 +5,16 @@ namespace EventosHenrryGA.Client.Services
 {
     public class ClienteService
     {
-        private readonly HttpClient httpClient;
+        private readonly HttpClient http;
 
-        public ClienteService(HttpClient _httpClient)
+        public ClienteService(HttpClient _http)
         {
-            this.httpClient = _httpClient;
+            this.http = _http;
         }
 
         public async Task<List<ClienteCLS>> GetClientes()
         {
-            return await httpClient.GetFromJsonAsync<List<ClienteCLS>>("api/cliente");
+            return await http.GetFromJsonAsync<List<ClienteCLS>>("api/cliente");
         }
     }
 }

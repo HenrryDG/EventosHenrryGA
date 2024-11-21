@@ -14,8 +14,15 @@ namespace EventosHenrryGA.Entities
         public DateTime? Fecha { get; set; }
         public string? Ubicacion { get; set; }
         public byte[]? ImagenEvento { get; set; }
+        public string ImagenEventoBase64 { get; set; }
         public byte[]? ArchivoEvento { get; set; }
+
+        public string ArchivoEventoBase64 { get; set; }
         public int? TipoEventoId { get; set; }
         public int? ClienteId { get; set; }
+
+        public string? NombreCliente { get; set; }
+
+        public string? NombreTipoEvento { get; set; }
     }
 }
