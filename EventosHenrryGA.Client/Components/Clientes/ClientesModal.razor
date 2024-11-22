@@ -16,26 +16,53 @@
                 </button>
             </div>
             <!-- Modal body -->
-            <form class="p-4 md:p-5" onsubmit="return false;">
-                <div class="grid-cols-2 mb-4 grid gap-4">
-                    <div class="col-span-2">
-                        <label for="nombre" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
-                        <input type="text" @bind="cliente.Nombre" id="nombre" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Nombre" required="">
+            
+            <EditForm Model="@cliente" OnValidSubmit="@GuardarCliente">
+                <DataAnnotationsValidator />
+
+                <div class="p-4">
+                    <div class="grid-cols-2 mb-4 grid gap-4">
+                        <div class="col-span-2">
+                            <label for="nombre" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
+                            <input type="text" @bind="cliente.Nombre" id="nombre"
+                                   class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                   placeholder="Nombre">
+                            <span class="text-sm text-red-500">
+                                <ValidationMessage For="@(() => cliente.Nombre)" />
+                            </span>
+                        </div>
+
+                        <div class="col-span-2">
+                            <label for="apellidoPaterno" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Apellido Paterno</label>
+                            <input type="text" @bind="cliente.ApellidoPaterno" id="ap_paterno"
+                                   class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                   placeholder="Apellido Paterno">
+                            <span class="text-sm text-red-500">
+                                <ValidationMessage For="@(() => cliente.ApellidoPaterno)" />
+                            </span>
+                        </div>
+
+                        <div class="col-span-2">
+                            <label for="apellidoMaterno" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Apellido Materno</label>
+                            <input type="text" @bind="cliente.ApellidoMaterno" id="ap_materno"
+                                   class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                   placeholder="Apellido Materno">
+                            <span class="text-sm text-red-500">
+                                <ValidationMessage For="@(() => cliente.ApellidoMaterno)" />
+                            </span>
+                        </div>
                     </div>
-                    <div class="col-span-2">
-                        <label for="apellidoPaterno" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Apellido Paterno</label>
-                        <input type="text" @bind="cliente.ApellidoPaterno" id="ap_paterno" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Ap. Paterno" required="">
-                    </div>
-                    <div class="col-span-2">
-                        <label for="apellidoMaterno" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Apellido Materno</label>
-                        <input type="text" @bind="cliente.ApellidoMaterno" id="ap_materno" rows="4" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ap. Materno" required="">
-                    </div>
+
+                    <button type="submit" class="inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        <svg class="-ms-1 me-1 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        Guardar
+                    </button>
                 </div>
-                <button type="button" @onclick="GuardarCliente" class="inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                    <svg class="-ms-1 me-1 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
-                    Guardar
-                </button>
-            </form>
+            </EditForm>
+
+
         </div>
     </div>
 </div>
