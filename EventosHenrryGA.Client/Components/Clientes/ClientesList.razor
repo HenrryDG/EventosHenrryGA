@@ -6,7 +6,7 @@
         <button class="ml-2 rounded-lg bg-gray-700 px-4 py-2 text-white transition-all duration-200 hover:bg-gray-800" @onclick="Buscar">Buscar</button>
         <button class="ml-2 rounded-lg bg-gray-700 px-4 py-2 text-white transition-all duration-200 hover:bg-gray-800" @onclick="Limpiar">Limpiar</button>
     </div>
-    <a href="/clientes/crear" class="rounded-lg bg-gray-700 px-4 py-2 text-white transition-all duration-200 hover:bg-gray-800">Nuevo Cliente</a>
+    <button class="rounded-lg bg-gray-700 px-4 py-2 text-white transition-all duration-200 hover:bg-gray-800" @onclick="AbrirModalNuevoCliente">Nuevo Cliente</button>
 </div>
 
 @if (clientesFiltrados == null)
@@ -43,8 +43,8 @@ else
                         <td class="px-6 py-4">@cliente.ApellidoPaterno</td>
                         <td class="px-6 py-4">@cliente.ApellidoMaterno</td>
                         <td class="px-6 py-4">
-                            <button href="" class="rounded bg-blue-600 px-4 py-2 font-bold text-white transition-all duration-200 hover:bg-blue-500">Editar</button>
-                            <button href="" class="rounded bg-red-600 px-4 py-2 font-bold text-white transition-all duration-200 hover:bg-red-500">Eliminar</button>
+                            <button class="rounded bg-blue-600 px-4 py-2 font-bold text-white transition-all duration-200 hover:bg-blue-500" @onclick="() => AbrirModalEditarCliente(cliente.Id)">Editar</button>
+                            <button class="rounded bg-red-600 px-4 py-2 font-bold text-white transition-all duration-200 hover:bg-red-500" @onclick="() => BorrarCliente(cliente.Id)">Eliminar</button>
                         </td>
                     </tr>
                 }
@@ -53,29 +53,36 @@ else
     </div>
 }
 
+<!-- Modal -->
+@if (mostrarModal)
+{
+    <ClientesModal IdCliente="clienteSeleccionado" OnClose="CerrarModal" />
+}
+
 @code {
-    private List<ClienteCLS> clientes = null!; // Lista completa de clientes
-    private List<ClienteCLS> clientesFiltrados = null!; // Lista filtrada para mostrar
-    private string clienteBuscado = string.Empty; // Texto de búsqueda
+    private List<ClienteCLS> clientes = null!;
+    private List<ClienteCLS> clientesFiltrados = null!;
+    private string clienteBuscado = string.Empty;
+
+    private bool mostrarModal = false; // Controla la visibilidad del modal
+    private int clienteSeleccionado = 0; // ID del cliente seleccionado (0 para nuevo cliente)
 
     protected override async Task OnInitializedAsync()
     {
-        clientes = await clienteService.GetClientes(); // Obtén todos los clientes
-        clientesFiltrados = clientes; // Inicializa la lista filtrada con todos los clientes
+        clientes = await clienteService.GetClientes();
+        clientesFiltrados = clientes;
     }
 
     private void Buscar()
     {
         if (string.IsNullOrEmpty(clienteBuscado))
         {
-            clientesFiltrados = clientes; // Si no hay texto ingresado, muestra todos los clientes
+            clientesFiltrados = clientes;
         }
         else
         {
-            // Divide el texto ingresado en palabras
             var palabras = clienteBuscado.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-            // Filtra los clientes verificando que todas las palabras coincidan con alguna parte del nombre o los apellidos
             clientesFiltrados = clientes
                 .Where(c => palabras.All(palabra =>
                     c.Nombre!.Contains(palabra, StringComparison.OrdinalIgnoreCase) ||
@@ -85,11 +92,35 @@ else
         }
     }
 
-
     private void Limpiar()
     {
         clientesFiltrados = clientes;
         clienteBuscado = string.Empty;
+    }
 
+    private void AbrirModalNuevoCliente()
+    {
+        clienteSeleccionado = 0; // 0 indica que es un nuevo cliente
+        mostrarModal = true;
+    }
+
+    private void AbrirModalEditarCliente(int idCliente)
+    {
+        clienteSeleccionado = idCliente; // Asigna el ID del cliente para editar
+        mostrarModal = true;
+    }
+
+    private async Task BorrarCliente(int idCliente)
+    {
+        await clienteService.DeleteCliente(idCliente);
+        clientes = await clienteService.GetClientes();
+        clientesFiltrados = clientes;
+    }
+
+    private async Task CerrarModal()
+    {
+        mostrarModal = false; // Oculta el modal
+        clientes = await clienteService.GetClientes(); // Actualiza la lista de clientes
+        clientesFiltrados = clientes;
     }
 }

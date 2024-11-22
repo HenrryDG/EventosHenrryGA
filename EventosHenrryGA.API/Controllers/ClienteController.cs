@@ -74,7 +74,7 @@ namespace EventosHenrryGA.API.Controllers
         {
             try
             {
-                var cliente = bd.Clientes.Find(id);
+                var cliente = bd.Clientes.Where(c => c.Id == id).FirstOrDefault();
 
                 if (cliente == null)
                 {
@@ -91,6 +91,48 @@ namespace EventosHenrryGA.API.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpPost]
+        public IActionResult SaveCliente([FromBody] ClienteCLS objCliente)
+        {
+            try
+            {
+
+                if (objCliente.Id == 0)
+                {
+                    // Crear cliente
+                    var nuevoCliente = new Cliente
+                    {
+                        Nombre = objCliente.Nombre,
+                        ApellidoPaterno = objCliente.ApellidoPaterno,
+                        ApellidoMaterno = objCliente.ApellidoMaterno,
+                        Habilitado = true
+                    };
+
+                    bd.Clientes.Add(nuevoCliente);
+                    bd.SaveChanges();
+                }
+                else
+                {
+                    // Actualizar cliente
+                    var clienteExistente = bd.Clientes.Where(c => c.Id == objCliente.Id).FirstOrDefault()!;
+
+                    clienteExistente.Nombre = objCliente.Nombre;
+                    clienteExistente.ApellidoPaterno = objCliente.ApellidoPaterno;
+                    clienteExistente.ApellidoMaterno = objCliente.ApellidoMaterno;
+
+                    bd.Clientes.Update(clienteExistente);
+                    bd.SaveChanges();
+                }
+
+                return Ok("Cliente guardado correctamente");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
 
     }
 }
