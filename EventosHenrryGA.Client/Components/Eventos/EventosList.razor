@@ -81,7 +81,7 @@ else
                                 Editar
                             </button>
 
-                            <button  class="rounded bg-red-600 px-4 py-2 font-bold text-white shadow-md transition-all duration-300 ease-in-out hover:bg-red-500">
+                            <button @onclick="() => BorrarEvento(evento.Id) "  class="rounded bg-red-600 px-4 py-2 font-bold text-white shadow-md transition-all duration-300 ease-in-out hover:bg-red-500">
                                 Eliminar
                             </button>
 
@@ -141,6 +141,7 @@ else
                     e.NombreTipoEvento!.Contains(palabra, StringComparison.OrdinalIgnoreCase)))// Buscar en el tipo de evento                ))
                 .ToList();
         }
+
     }
 
 
@@ -148,6 +149,7 @@ else
     {
         eventosFiltrados = eventos;
         eventoBuscado = string.Empty;
+
     }
 
     private void AbrirModalNuevoEvento()
@@ -167,6 +169,13 @@ else
     private async Task CerrarModal()
     {
         mostrarModal = false;
+        eventos = await eventoService.GetEventos();
+        eventosFiltrados = eventos;
+    }
+
+    private async Task BorrarEvento(int idEvento)
+    {
+        await eventoService.DeleteEvento(idEvento);
         eventos = await eventoService.GetEventos();
         eventosFiltrados = eventos;
     }

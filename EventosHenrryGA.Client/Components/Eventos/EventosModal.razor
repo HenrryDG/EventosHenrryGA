@@ -2,7 +2,7 @@
 @inject ClienteService clienteService
 
 <div class="fixed inset-0 z-50 flex w-full items-center justify-center bg-black bg-opacity-50">
-    <div class="relative max-h-full w-full max-w-2xl p-4">
+    <div class="relative max-h-full w-full max-w-3xl p-4">
         <!-- Ancho ajustado -->
         <div class="relative h-full w-full p-4 md:h-auto">
             <!-- Modal content -->
@@ -21,26 +21,31 @@
                 </div>
 
                 <!-- Modal body -->
-                <form>
+                <EditForm Model="@evento" OnValidSubmit="GuardarEvento">
+                    <DataAnnotationsValidator/>
                     <div class="mb-4 grid gap-4 sm:grid-cols-2">
                         <!-- Inputs previos -->
                         <div>
-                            <label for="name" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Evento</label>
-                            <input type="text" @bind="evento.Nombre" name="name" id="name" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-700 dark:text-white">
+                            <label for="nombre" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Evento</label>
+                            <input type="text" @bind="evento.Nombre" name="nombre" id="nombre" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-700 dark:text-white">
+                            <ValidationMessage For="@(() => evento.Nombre)" />
+
                         </div>
                         <div>
-                            <label for="brand" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Ubicacion</label>
-                            <input type="text" @bind="evento.Ubicacion" name="brand" id="brand" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-700 dark:text-white">
+                            <label for="ubicacion" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Ubicacion</label>
+                            <input type="text" @bind="evento.Ubicacion" name="ubicacion" id="ubicacion" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-700 dark:text-white">
+                            <ValidationMessage For="@(() => evento.Ubicacion)" />
                         </div>
                         <div>
-                            <label for="price" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Fecha</label>
-                            <input type="date" @bind="evento.Fecha" name="price" id="price" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-700 dark:text-white">
+                            <label for="fecha" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Fecha</label>
+                            <input type="date" @bind="evento.Fecha" name="fecha" id="fecha" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-700 dark:text-white">
+                            <ValidationMessage For="@(() => evento.Fecha)" />
                         </div>
 
                         <!-- Tipo de Evento -->
                         <div>
-                            <label for="category" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Tipo de Evento</label>
-                            <select id="category" @bind="evento.TipoEventoId" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white">
+                            <label for="tipo" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Tipo de Evento</label>
+                            <select id="tipo" @bind="evento.TipoEventoId" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white">
                                 @foreach (var tipoEvento in tipoEventos)
                                 {
                                     <option value="@tipoEvento.Id">@tipoEvento.NombreTipo</option>
@@ -50,8 +55,8 @@
 
                         <!-- Cliente -->
                         <div>
-                            <label for="category" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Cliente</label>
-                            <select id="category" @bind="evento.ClienteId" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white">
+                            <label for="cliente" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Cliente</label>
+                            <select id="cliente" @bind="evento.ClienteId" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white">
                                 @foreach (var cliente in clientes)
                                 {
                                     <option value="@cliente.Id">@cliente.Nombre @cliente.ApellidoPaterno</option>
@@ -61,8 +66,9 @@
 
                         <!-- Descripción -->
                         <div class="sm:col-span-2">
-                            <label for="description" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Descripción</label>
-                            <textarea id="description" @bind="evento.Descripcion" rows="4" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"></textarea>
+                            <label for="descripcion" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Descripción</label>
+                            <textarea id="descripcion" @bind="evento.Descripcion" rows="4" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"></textarea>
+                            <ValidationMessage For="@(() => evento.Descripcion)" />
                         </div>
 
                         <!-- Subir Imagen -->
@@ -113,7 +119,7 @@
                     <button type="submit" class="inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-white hover:bg-blue-800">
                         Guardar
                     </button>
-                </form>
+                </EditForm>
             </div>
         </div>
     </div>
@@ -203,8 +209,26 @@
 
     private async Task GuardarEvento()
     {
-        await CerrarModal();
+        try
+        {
+            bool resultado = await eventoService.SaveEvento(evento);
+
+            if (resultado)
+            {
+                // Recargar los datos y cerrar el modal
+                await CerrarModal();
+            }
+            else
+            {
+                Console.WriteLine("Error al guardar el evento.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
     }
+
 
     private async Task CerrarModal()
     {

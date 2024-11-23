@@ -23,6 +23,8 @@ public partial class Evento
 
     public int? ClienteId { get; set; }
 
+    public bool Habilitado { get; set; }
+
     public virtual Cliente? Cliente { get; set; }
 
     public virtual TipoEvento? TipoEvento { get; set; }
