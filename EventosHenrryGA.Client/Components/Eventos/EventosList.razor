@@ -6,7 +6,7 @@
         <button class="ml-2 rounded-lg bg-gray-700 px-4 py-2 text-white transition-all duration-200 hover:bg-gray-800" @onclick="Buscar">Buscar</button>
         <button class="ml-2 rounded-lg bg-gray-700 px-4 py-2 text-white transition-all duration-200 hover:bg-gray-800" @onclick="Limpiar">Limpiar</button>
     </div>
-    <button class="rounded-lg bg-gray-700 px-4 py-2 text-white transition-all duration-200 hover:bg-gray-800" >Nuevo Evento</button>
+    <button class="rounded-lg bg-gray-700 px-4 py-2 text-white transition-all duration-200 hover:bg-gray-800" @onclick="AbrirModalNuevoEvento" >Nuevo Evento</button>
 </div>
 
 
@@ -62,7 +62,7 @@ else
                             @evento.NombreTipoEvento
                         </td>
                         <td class="px-6 py-4">
-                            @evento.Fecha
+                            @evento.Fecha?.ToString("yyyy-MM-dd")
                         </td>
                         <td class="px-6 py-4">
                             @evento.Ubicacion
@@ -77,22 +77,26 @@ else
                                 Descargar
                             </button>
 
-                            <button class="rounded bg-blue-600 px-4 py-2 font-bold text-white shadow-md transition-all duration-300 ease-in-out hover:bg-blue-500">
+                            <button @onclick="() => AbrirModalEditarEvento(evento.Id)" class="rounded bg-blue-600 px-4 py-2 font-bold text-white shadow-md transition-all duration-300 ease-in-out hover:bg-blue-500">
                                 Editar
                             </button>
 
-                            <button class="rounded bg-red-600 px-4 py-2 font-bold text-white shadow-md transition-all duration-300 ease-in-out hover:bg-red-500">
+                            <button  class="rounded bg-red-600 px-4 py-2 font-bold text-white shadow-md transition-all duration-300 ease-in-out hover:bg-red-500">
                                 Eliminar
                             </button>
 
-
                         </td>
-
                     </tr>
                 }
             </tbody>
         </table>
     </div>
+}
+
+@if (mostrarModal)
+{
+    <EventosModal IdEvento="eventoSeleccionado" OnClose="CerrarModal"/>
+
 }
 
 <script>
@@ -109,10 +113,11 @@ else
 @code {
     private List<EventoCLS> eventos = null!;
     private List<EventoCLS> eventosFiltrados = null!;
-
     private string eventoBuscado = string.Empty;
 
+    private bool mostrarModal = false;
     private int eventoSeleccionado = 0;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -143,6 +148,27 @@ else
     {
         eventosFiltrados = eventos;
         eventoBuscado = string.Empty;
+    }
+
+    private void AbrirModalNuevoEvento()
+    {
+        eventoSeleccionado = 0;
+        mostrarModal = true;
+
+    }
+
+    private void AbrirModalEditarEvento(int idCliente)
+    {
+        eventoSeleccionado = idCliente;
+        mostrarModal = true;
+
+    }
+
+    private async Task CerrarModal()
+    {
+        mostrarModal = false;
+        eventos = await eventoService.GetEventos();
+        eventosFiltrados = eventos;
     }
 
     private async Task DescargarArchivo(int idEvento, string nombreEvento)

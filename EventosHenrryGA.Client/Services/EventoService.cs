@@ -21,6 +21,16 @@ namespace EventosHenrryGA.Client.Services
             return await http.GetFromJsonAsync<List<EventoCLS>>("api/evento");
         }
 
+        public async Task<EventoCLS> GetEvento(int idEvento)
+        {
+            return await http.GetFromJsonAsync<EventoCLS>($"api/evento/{idEvento}");
+        }
+
+        public async Task<List<TipoEventoCLS>> GetTipoEventos()
+        {
+            return await http.GetFromJsonAsync<List<TipoEventoCLS>>("api/tipoevento");
+        }
+
         public async Task<string> GetArchivo(int idEvento)
         {
             try

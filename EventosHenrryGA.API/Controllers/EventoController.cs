@@ -29,7 +29,8 @@ namespace EventosHenrryGA.API.Controllers
                     {
                         Id = e.Id,
                         Nombre = e.Nombre,
-                        Fecha = e.Fecha,
+                        // Comprobamos si la fecha es nula antes de aplicar el ToString()
+                        Fecha = e.Fecha.Value.Date,
                         Descripcion = e.Descripcion,
                         Ubicacion = e.Ubicacion,
                         ImagenEventoBase64 = e.ImagenEvento != null ? Convert.ToBase64String(e.ImagenEvento) : null,
@@ -42,6 +43,43 @@ namespace EventosHenrryGA.API.Controllers
                     .ToList();
 
                 return Ok(eventos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        [HttpGet("{id}")]
+        public IActionResult GetEvento(int id)
+        {
+            try
+            {
+                var evento = bd.Eventos
+                    .Include(e => e.Cliente)  // Carga la relación con Cliente
+                    .Include(e => e.TipoEvento)  // Si también quieres incluir el TipoEvento
+                    .Where(e => e.Id == id)
+                    .Select(e => new EventoCLS
+                    {
+                        Id = e.Id,
+                        Nombre = e.Nombre,
+                        Fecha = e.Fecha,
+                        Descripcion = e.Descripcion,
+                        Ubicacion = e.Ubicacion,
+                        ImagenEventoBase64 = e.ImagenEvento != null ? Convert.ToBase64String(e.ImagenEvento) : null,
+                        ArchivoEvento = e.ArchivoEvento,
+                        TipoEventoId = e.TipoEventoId,
+                        ClienteId = e.ClienteId,
+                        NombreCliente = $"{e.Cliente.Nombre} {e.Cliente.ApellidoPaterno} {e.Cliente.ApellidoMaterno}",
+                        NombreTipoEvento = e.TipoEvento.NombreTipo,
+                    }).FirstOrDefault();
+
+                if (evento == null)
+                {
+                    return NotFound();
+                }
+                return Ok(evento);
             }
             catch (Exception ex)
             {

@@ -1,0 +1,215 @@
+﻿@inject EventoService eventoService
+@inject ClienteService clienteService
+
+<div class="fixed inset-0 z-50 flex w-full items-center justify-center bg-black bg-opacity-50">
+    <div class="relative max-h-full w-full max-w-2xl p-4">
+        <!-- Ancho ajustado -->
+        <div class="relative h-full w-full p-4 md:h-auto">
+            <!-- Modal content -->
+            <div class="relative rounded-lg bg-gray-700 p-4 shadow dark:bg-gray-800 sm:p-5">
+                <!-- Modal header -->
+                <div class="mb-4 flex items-center justify-between rounded-t border-b pb-4 dark:border-gray-600 sm:mb-5">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        @Titulo
+                    </h3>
+                    <button @onclick="CerrarModal" type="button" class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+                        <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+
+                <!-- Modal body -->
+                <form>
+                    <div class="mb-4 grid gap-4 sm:grid-cols-2">
+                        <!-- Inputs previos -->
+                        <div>
+                            <label for="name" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Evento</label>
+                            <input type="text" @bind="evento.Nombre" name="name" id="name" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <div>
+                            <label for="brand" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Ubicacion</label>
+                            <input type="text" @bind="evento.Ubicacion" name="brand" id="brand" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-700 dark:text-white">
+                        </div>
+                        <div>
+                            <label for="price" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Fecha</label>
+                            <input type="date" @bind="evento.Fecha" name="price" id="price" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-700 dark:text-white">
+                        </div>
+
+                        <!-- Tipo de Evento -->
+                        <div>
+                            <label for="category" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Tipo de Evento</label>
+                            <select id="category" @bind="evento.TipoEventoId" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white">
+                                @foreach (var tipoEvento in tipoEventos)
+                                {
+                                    <option value="@tipoEvento.Id">@tipoEvento.NombreTipo</option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Cliente -->
+                        <div>
+                            <label for="category" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Cliente</label>
+                            <select id="category" @bind="evento.ClienteId" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white">
+                                @foreach (var cliente in clientes)
+                                {
+                                    <option value="@cliente.Id">@cliente.Nombre @cliente.ApellidoPaterno</option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="sm:col-span-2">
+                            <label for="description" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Descripción</label>
+                            <textarea id="description" @bind="evento.Descripcion" rows="4" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"></textarea>
+                        </div>
+
+                        <!-- Subir Imagen -->
+                        <div class="col-span-2 flex items-center gap-4">
+                            <!-- Input para cargar la imagen -->
+                            <div class="flex-1">
+                                <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Imagen Evento</label>
+                                <InputFile OnChange="HandleSelected" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white" />
+                            </div>
+
+                            <!-- Imagen de vista previa -->
+                            <div class="flex-shrink-0">
+                                @if (!string.IsNullOrEmpty(imagenPreview))
+                                {
+                                    <img src="@imagenPreview" alt="Preview" class="rounded-full border border-gray-400 object-cover" style="height: 100px; width: 100px;">
+                                }
+                                else
+                                {
+                                    <p class="text-sm text-gray-400">No imagen</p>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="col-span-2 flex items-center gap-4">
+                            <div class="flex-1">
+                                <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Archivo PDF</label>
+                                <InputFile OnChange="HandlePdfSelected" class="block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white" />
+                            </div>
+
+                            <!-- Mensaje de archivo seleccionado -->
+                            <div class="flex-shrink-0">
+                                @if (archivoPdf != null)
+                                {
+                                    <p class="text-sm text-green-500">Archivo cargado correctamente</p>
+                                }
+                                else
+                                {
+                                    <p class="text-sm text-gray-400">No se ha seleccionado un archivo PDF.</p>
+                                }
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                    <!-- Botón Guardar -->
+                    <button type="submit" class="inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-white hover:bg-blue-800">
+                        Guardar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public int IdEvento { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    private EventoCLS evento = new EventoCLS();
+
+    private List<ClienteCLS> clientes = new List<ClienteCLS>();
+    private List<TipoEventoCLS> tipoEventos = new List<TipoEventoCLS>();
+
+    private string Titulo { get; set; } = string.Empty;
+    private string Mensaje { get; set; } = string.Empty;
+
+    private string imagenPreview = string.Empty;
+    private byte[] archivoPdf = null;
+
+    private async Task HandlePdfSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        // Validar que sea un archivo PDF
+        if (file.ContentType != "application/pdf")
+        {
+            Mensaje = "Por favor, selecciona un archivo PDF válido.";
+            return;
+        }
+
+        // Leer el archivo y guardarlo en binario
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream().ReadAsync(buffer);
+
+        archivoPdf = buffer; // Almacenar el archivo PDF en binario
+        evento.ArchivoEvento = archivoPdf; // Guardar en el modelo
+    }
+
+
+    private async Task HandleSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            var buffer = new byte[file.Size]; // Leer el archivo en un buffer
+            await file.OpenReadStream().ReadAsync(buffer);
+
+            imagenPreview = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}"; // Generar la preview
+            evento.ImagenEventoBase64 = Convert.ToBase64String(buffer); // Almacenar en el modelo
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Titulo = IdEvento == 0 ? "Nuevo Evento" : "Editar Evento";
+
+        clientes = await clienteService.GetClientes();
+        tipoEventos = await eventoService.GetTipoEventos();
+
+
+        if (IdEvento != 0)
+        {
+            evento = await eventoService.GetEvento(IdEvento);
+
+            if (!string.IsNullOrEmpty(evento.ImagenEventoBase64))
+            {
+                imagenPreview = $"data:image/jpeg;base64,{evento.ImagenEventoBase64}";
+            }
+
+            if (evento.ArchivoEvento != null && evento.ArchivoEvento.Length > 0)
+            {
+                archivoPdf = evento.ArchivoEvento;
+            }
+
+        }
+        else
+        {
+            evento = new EventoCLS();
+            Console.WriteLine("Nuevo Evento creado");
+        }
+    }
+
+    private async Task GuardarEvento()
+    {
+        await CerrarModal();
+    }
+
+    private async Task CerrarModal()
+    {
+        await OnClose.InvokeAsync(); // Notifica al componente padre que se cerró el modal
+    }
+
+
+}
