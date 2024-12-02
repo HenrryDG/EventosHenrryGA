@@ -12,9 +12,10 @@
 
 @if (eventos == null)
 {
-    <div class="flex items-center justify-center">
-        <p class="text-lg text-gray-600">Cargando...</p>
-    </div>
+        <p class="text-center text-xl font-medium text-gray-400">
+            <span class="mr-3 inline-block animate-spin">⟳</span>
+            Cargando eventos...
+        </p>
 }
 else if (eventos.Count == 0)
 {
